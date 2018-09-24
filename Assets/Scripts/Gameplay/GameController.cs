@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -8,8 +9,11 @@ public class GameController : MonoBehaviour
 {
 	[SerializeField] List<GameObject> waves;
 	[SerializeField] float waveDelay;
+	[SerializeField] private float startDelay;
 
 	[SerializeField] TextMeshProUGUI timer;
+
+	[SerializeField] private Transform loadingScreen;
 
 	[SerializeField] GameObject restartButton;
 
@@ -26,6 +30,7 @@ public class GameController : MonoBehaviour
 
 	void Start ()
 	{
+		loadingScreen.DOLocalMoveX(-1400f, .35f);
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		StartCoroutine(SpawnWaves());
 	}
@@ -53,6 +58,9 @@ public class GameController : MonoBehaviour
 			yield return new WaitForSeconds(waveDelay);
 		}
 		*/
+
+		yield return new WaitForSeconds(startDelay);
+		
 		while(player)
 		{
 			Instantiate(waves[Random.Range(0, waves.Count)], transform.up * 8, Quaternion.identity);
