@@ -11,6 +11,8 @@ public class MenuManager : MonoBehaviour
 	[SerializeField] private GameObject startupScreen;
 	[SerializeField] private GameObject menuScreen;
 	[SerializeField] private Transform LoadingScreen;
+	[SerializeField] private Transform quitScreen;
+	[SerializeField] private CanvasGroup darkOverlay;
 	[SerializeField] private Transform bg1;
 	[SerializeField] private Transform bg2;
 
@@ -49,7 +51,7 @@ public class MenuManager : MonoBehaviour
 
 	IEnumerator loadGame()
 	{
-		LoadingScreen.DOLocalMoveX(0, .25f);
+		LoadingScreen.DOLocalMoveX(0, .25f).SetEase(easeType);
 		
 		yield return new WaitForSeconds(.35f);
 		
@@ -68,5 +70,27 @@ public class MenuManager : MonoBehaviour
 			*/
 			yield return null;
 		}
+	}
+
+	public void ToggleConfirmQuit(bool on)
+	{
+		if (on)
+		{
+			darkOverlay.blocksRaycasts = true;
+			DOTween.To(()=> darkOverlay.alpha, x=> darkOverlay.alpha = x, 1, .5f);
+			quitScreen.DOLocalMoveY(-873f, .5f).SetEase(easeType);
+
+		}
+		else
+		{
+			darkOverlay.blocksRaycasts = false;
+			DOTween.To(()=> darkOverlay.alpha, x=> darkOverlay.alpha = x, 0, .5f);
+			quitScreen.DOLocalMoveY(-1250f, .5f).SetEase(easeType);
+		}
+	}
+
+	public void QuitGame()
+	{
+		Application.Quit();
 	}
 }

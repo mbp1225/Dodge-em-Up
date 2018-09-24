@@ -22,6 +22,7 @@ public class InputController : MonoBehaviour
 
 	public void Press(string button)
 	{
+		print("Pressed button");
 		if (button == "left")
 		{
 			rightHeld = false;

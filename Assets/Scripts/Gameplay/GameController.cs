@@ -14,6 +14,10 @@ public class GameController : MonoBehaviour
 	[SerializeField] TextMeshProUGUI timer;
 
 	[SerializeField] private Transform loadingScreen;
+	[SerializeField] private Transform tutorialScreen;
+
+	[SerializeField] private Transform timerBar;
+	[SerializeField] private Transform hullBar;
 
 	[SerializeField] GameObject restartButton;
 
@@ -30,7 +34,7 @@ public class GameController : MonoBehaviour
 
 	void Start ()
 	{
-		loadingScreen.DOLocalMoveX(-1400f, .35f);
+		loadingScreen.DOLocalMoveX(-1400f, .35f).SetEase(Ease.OutExpo);
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		StartCoroutine(SpawnWaves());
 	}
@@ -47,6 +51,15 @@ public class GameController : MonoBehaviour
 
 	IEnumerator SpawnWaves()
 	{
+		yield return new WaitForSeconds(1.25f);
+		loadingScreen.DOLocalMoveX(1400f, 0f);
+		tutorialScreen.DOLocalMoveX(-1080f, .4f).SetEase(Ease.OutExpo);
+		yield return new WaitForSeconds(.5f);
+		timerBar.DOLocalMoveY(960, .3f).SetEase(Ease.OutExpo);
+		hullBar.DOMoveY(0, .3f).SetEase(Ease.OutExpo);
+
+
+		yield return new WaitForSeconds(startDelay);
 		isPlaying = true;
 		startTime = Time.time;
 
@@ -59,7 +72,7 @@ public class GameController : MonoBehaviour
 		}
 		*/
 
-		yield return new WaitForSeconds(startDelay);
+		
 		
 		while(player)
 		{
@@ -67,7 +80,7 @@ public class GameController : MonoBehaviour
 			yield return new WaitForSeconds(waveDelay);
 		}
 
-		restartButton.SetActive(true);
+		restartButton.transform.DOLocalMoveX(0, .25f).SetEase(Ease.OutExpo);
 		EndScreen();
 
 		isPlaying = false;
@@ -91,6 +104,13 @@ public class GameController : MonoBehaviour
 
 	public void ReloadScene()
 	{
+		StartCoroutine(Restart());
+	}
+
+	IEnumerator Restart()
+	{
+		loadingScreen.DOLocalMoveX(0f, .35f).SetEase(Ease.OutExpo);
+		yield return new WaitForSeconds(.4f);
 		print("Reloading Scene");
 		Scene scene = SceneManager.GetActiveScene();
 		SceneManager.LoadScene(scene.name);
