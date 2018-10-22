@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour
 
 	[SerializeField] private Transform loadingScreen;
 	[SerializeField] private Transform tutorialScreen;
+	[SerializeField] private Transform pauseScreen;
 
 	[SerializeField] private Transform timerBar;
 	[SerializeField] private Transform hullBar;
@@ -104,7 +105,21 @@ public class GameController : MonoBehaviour
 
 	public void ReloadScene()
 	{
+		print("Restarting...");
+		Time.timeScale = 1;
 		StartCoroutine(Restart());
+	}
+
+	public void Pause()
+	{
+		pauseScreen.transform.DOLocalMoveX(0, .25f).SetEase(Ease.OutExpo).SetUpdate(UpdateType.Late, true);
+		DOTween.To(()=> Time.timeScale, x=> Time.timeScale = x, 0, .25f).SetUpdate(UpdateType.Late, true);
+	}
+
+	public void Unpause()
+	{
+		pauseScreen.transform.DOLocalMoveX(1200, .25f).SetEase(Ease.OutExpo).SetUpdate(UpdateType.Late, true);
+		DOTween.To(()=> Time.timeScale, x=> Time.timeScale = x, 1, .25f).SetUpdate(UpdateType.Late, true);
 	}
 
 	IEnumerator Restart()
