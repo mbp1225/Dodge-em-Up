@@ -6660,7 +6660,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: v0.7b
+  m_text: v0.7c
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8783acb8b305dd24da84a180e481d4e2, type: 2}
   m_sharedMaterial: {fileID: 21934241138294832, guid: 8783acb8b305dd24da84a180e481d4e2,

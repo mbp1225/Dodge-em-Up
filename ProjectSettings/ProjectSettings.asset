@@ -118,7 +118,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.7b
+  bundleVersion: 0.7c
   preloadedAssets: []
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -154,8 +154,8 @@ PlayerSettings:
     Android: com.Pinheiro.Dmup
     Standalone: com.Pinheiro.Dmup
   buildNumber: {}
-  AndroidBundleVersionCode: 3
-  AndroidMinSdkVersion: 16
+  AndroidBundleVersionCode: 4
+  AndroidMinSdkVersion: 19
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 0
   aotOptions: 
