@@ -142,6 +142,12 @@ public class MenuManager : MonoBehaviour
 		}
 	}
 
+	public void ShowLeaderboards()
+	{
+		PlayGamesScript.ShowLeaderboardsUI();
+		print("Show Leaderboards");
+	}
+
 	public void QuitGame()
 	{
 		Application.Quit();

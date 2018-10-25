@@ -7,6 +7,8 @@ using TMPro;
 
 public class GameController : MonoBehaviour
 {
+	[SerializeField] PlayGamesScript PlayGamesManager;
+
 	[SerializeField] List<GameObject> waves;
 	[SerializeField] float waveDelay;
 	[SerializeField] private float startDelay;
@@ -36,6 +38,7 @@ public class GameController : MonoBehaviour
 
 	void Start ()
 	{
+		PlayGamesManager = GameObject.FindWithTag("Manager").GetComponent<PlayGamesScript>();
 		loadingScreen.DOLocalMoveX(-1400f, .35f).SetEase(Ease.OutExpo);
 		player = GameObject.FindGameObjectWithTag("Player").transform;
 		StartCoroutine(SpawnWaves());
