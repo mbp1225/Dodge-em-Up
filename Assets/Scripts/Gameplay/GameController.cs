@@ -102,6 +102,9 @@ public class GameController : MonoBehaviour
 		{
 			highScore.text = string.Format(PlayerPrefs.GetFloat("highscore").ToString("#.00") + "s");
 		}
+
+		PlayGamesScript.AddScoreToLeaderboard(GPGSIds.leaderboard_highscores, (long)currentTime);
+		PlayGamesScript.ShowLeaderboardsUI();
 	}
 
 	public void ReloadScene()
