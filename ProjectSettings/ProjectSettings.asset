@@ -154,7 +154,7 @@ PlayerSettings:
     Android: com.Pinheiro.Dmup
     Standalone: com.Pinheiro.Dmup
   buildNumber: {}
-  AndroidBundleVersionCode: 4
+  AndroidBundleVersionCode: 5
   AndroidMinSdkVersion: 19
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 0

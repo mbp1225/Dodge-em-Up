@@ -2,10 +2,13 @@
 using GooglePlayGames.BasicApi;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
+using TMPro;
 
 public class PlayGamesScript : MonoBehaviour
 {
 	public static PlayGamesScript instance;
+
+	[SerializeField] TextMeshProUGUI playerName;
 
 	void Awake()
     {
@@ -36,15 +39,24 @@ public class PlayGamesScript : MonoBehaviour
 
 	void SignIn()
 	{
-		Social.localUser.Authenticate((bool success) => {});
+		Social.localUser.Authenticate((bool success) =>
+                {
+                    if (success)
+                    {
+                        ((GooglePlayGames.PlayGamesPlatform)Social.Active).SetGravityForPopups(Gravity.BOTTOM);
+                    }
+                });
 		print("Signed In");
+		playerName.text = Social.Active.localUser.userName;
+
 	}
 
 	#region Leaderboards
 
 	public static void AddScoreToLeaderboard(string leaderboardId, long score)
 	{
-		Social.ReportScore(score, leaderboardId, success => {});
+		print(leaderboardId);
+		Social.ReportScore(score, GPGSIds.leaderboard_highscores, success => {});
 		print("Score Added");
 	}
 
