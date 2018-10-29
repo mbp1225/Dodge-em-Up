@@ -29,6 +29,11 @@ public class GameController : MonoBehaviour
 	[SerializeField] TextMeshProUGUI highScore;
 	[SerializeField] GameObject newLabel;
 
+	[SerializeField] AudioSource sound;
+	[SerializeField] AudioClip[] sfx;
+
+	[SerializeField] MusicController musicController;
+
 	bool isPlaying = false;
 
 	float startTime = 0;
@@ -38,6 +43,7 @@ public class GameController : MonoBehaviour
 
 	void Start ()
 	{
+		sound.volume = PlayerPrefs.GetFloat("sfxVolume");
 		PlayGamesManager = GameObject.FindWithTag("Manager").GetComponent<PlayGamesScript>();
 		loadingScreen.DOLocalMoveX(-1400f, .35f).SetEase(Ease.OutExpo);
 		player = GameObject.FindGameObjectWithTag("Player").transform;
@@ -84,6 +90,9 @@ public class GameController : MonoBehaviour
 			Instantiate(waves[Random.Range(0, waves.Count)], transform.up * 8, Quaternion.identity);
 			yield return new WaitForSeconds(waveDelay);
 		}
+		musicController.Stop();
+		//sound.loop = true;
+		sound.PlayOneShot(sfx[3]);
 
 		restartButton.transform.DOLocalMoveX(0, .25f).SetEase(Ease.OutExpo);
 		EndScreen();
@@ -93,6 +102,8 @@ public class GameController : MonoBehaviour
 
 	void EndScreen()
 	{
+		
+
 		finalScore.text = string.Format(currentTime.ToString("#.00") + "s");
 
 		if (currentTime > PlayerPrefs.GetFloat("highscore"))
@@ -106,27 +117,49 @@ public class GameController : MonoBehaviour
 			highScore.text = string.Format(PlayerPrefs.GetFloat("highscore").ToString("#.00") + "s");
 		}
 
-		PlayGamesScript.AddScoreToLeaderboard(GPGSIds.leaderboard_highscores, (long)currentTime);
-		PlayGamesScript.ShowLeaderboardsUI();
+		print(currentTime);
+		float i = currentTime * 100f;
+		print((long) (currentTime * 100f));
+
+		PlayGamesScript.AddScoreToLeaderboard(GPGSIds.leaderboard_highscores, (long)(currentTime * 100f));
 	}
 
 	public void ReloadScene()
 	{
+		
+		ButtonPress();
 		print("Restarting...");
 		Time.timeScale = 1;
-		StartCoroutine(Restart());
+		StartCoroutine(LoadLevel(1));
 	}
 
 	public void Pause()
 	{
+		ButtonPress();
 		pauseScreen.transform.DOLocalMoveX(0, .25f).SetEase(Ease.OutExpo).SetUpdate(UpdateType.Late, true);
 		DOTween.To(()=> Time.timeScale, x=> Time.timeScale = x, 0, .25f).SetUpdate(UpdateType.Late, true);
 	}
 
 	public void Unpause()
 	{
+		ButtonPress();
 		pauseScreen.transform.DOLocalMoveX(1200, .25f).SetEase(Ease.OutExpo).SetUpdate(UpdateType.Late, true);
 		DOTween.To(()=> Time.timeScale, x=> Time.timeScale = x, 1, .25f).SetUpdate(UpdateType.Late, true);
+	}
+
+	public void ShowLeaderboards()
+	{
+		ButtonPress();
+		PlayGamesScript.ShowLeaderboardsUI();
+	}
+
+	public void ReturnToMenu()
+	{
+		Time.timeScale = 1;
+		//loadingScreen.DOLocalMoveX(0, .25f).SetEase(Ease.OutExpo);
+		ButtonPress();
+		//SceneManager.LoadScene(0);
+		StartCoroutine(LoadLevel(0));
 	}
 
 	public void UpdateMusic(string musicName)
@@ -134,12 +167,21 @@ public class GameController : MonoBehaviour
 		musicLabel.text = "Now Playing: " + musicName;
 	}
 
-	IEnumerator Restart()
+	IEnumerator LoadLevel(int s)
 	{
+		loadingScreen.DOLocalMoveX(1400f, 0f);
 		loadingScreen.DOLocalMoveX(0f, .35f).SetEase(Ease.OutExpo);
 		yield return new WaitForSeconds(.4f);
-		print("Reloading Scene");
-		Scene scene = SceneManager.GetActiveScene();
-		SceneManager.LoadScene(scene.name);
+		//print("Reloading Scene");
+		//Scene scene = SceneManager.GetActiveScene();
+		SceneManager.LoadScene(s);
+	}
+
+	public void ButtonPress()
+	{
+		//Handheld.Vibrate();
+		Vibration.Vibrate(25);
+		//if (Application.platform != RuntimePlatform.WindowsPlayer) Vibration.Vibrate(25);
+		sound.PlayOneShot(sfx[0]);
 	}
 }

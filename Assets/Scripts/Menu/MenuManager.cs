@@ -8,6 +8,9 @@ using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
+	[SerializeField] private Image initialOverlay;
+	[SerializeField] private CanvasGroup gdp;
+
 	[SerializeField] private GameObject startupScreen;
 	[SerializeField] private GameObject menuScreen;
 	[SerializeField] private Transform LoadingScreen;
@@ -25,6 +28,7 @@ public class MenuManager : MonoBehaviour
 	[SerializeField] private Ease easeType;
 
 	[SerializeField] private AudioSource music;
+	[SerializeField] private AudioSource sound;
 
 	//[SerializeField] private TextMeshProUGUI loadingText;
 
@@ -39,14 +43,37 @@ public class MenuManager : MonoBehaviour
 		if (!PlayerPrefs.HasKey("musicVolume")) PlayerPrefs.SetFloat("musicVolume", 1.0f);
 		if (!PlayerPrefs.HasKey("sfxVolume")) PlayerPrefs.SetFloat("sfxVolume", 1.0f);
 
-		music = GetComponent<AudioSource>();
+		//music = GetComponent<AudioSource>();
 		music.volume = PlayerPrefs.GetFloat("musicVolume");
+		sound.volume = PlayerPrefs.GetFloat("sfxVolume");
+
+		if (PlayGamesScript.firstStart) StartCoroutine(Initialize());
+		else Quickstart();
 
 	}
 	
 	void Update ()
 	{
 		
+	}
+
+	IEnumerator Initialize()
+	{
+		PlayGamesScript.firstStart = false;
+		initialOverlay.DOFade(0, .25f);
+		yield return new WaitForSeconds(2f);
+		Destroy(initialOverlay.gameObject);
+		gdp.DOFade(0,.25f);
+		yield return new WaitForSeconds(.25f);
+		Destroy(gdp.gameObject);
+	}
+
+	void Quickstart()
+	{
+		LoadingScreen.DOLocalMoveX(0, 0f);
+		Destroy(initialOverlay.gameObject);
+		Destroy(gdp.gameObject);
+		LoadingScreen.DOLocalMoveX(-1400f, .25f).SetEase(easeType);
 	}
 
 	public void GoToMenu()
@@ -59,6 +86,7 @@ public class MenuManager : MonoBehaviour
 
 	public void StartGame()
 	{
+		LoadingScreen.DOLocalMoveX(1400f, 0f);
 		StartCoroutine(loadGame());
 	}
 
@@ -119,6 +147,7 @@ public class MenuManager : MonoBehaviour
 			PlayerPrefs.SetFloat("sfxVolume", sfxSlider.value);
 			//music.volume = PlayerPrefs.GetFloat("musicVolume");
 			DOTween.To(()=> music.volume, x=> music.volume = x, PlayerPrefs.GetFloat("musicVolume"), .25f);
+			DOTween.To(()=> sound.volume, x=> sound.volume = x, PlayerPrefs.GetFloat("sfxVolume"), .25f);
 			darkOverlay.blocksRaycasts = false;
 			DOTween.To(()=> darkOverlay.alpha, x=> darkOverlay.alpha = x, 0, .5f);
 			ConfigurationScreen.DOLocalMoveX(-1080f, .5f).SetEase(easeType);
@@ -151,5 +180,13 @@ public class MenuManager : MonoBehaviour
 	public void QuitGame()
 	{
 		Application.Quit();
+	}
+
+	public void ButtonPress()
+	{
+		//Handheld.Vibrate();
+		Vibration.Vibrate(25);
+		//if (Application.platform != RuntimePlatform.WindowsPlayer) Vibration.Vibrate(25);
+		sound.Play();
 	}
 }

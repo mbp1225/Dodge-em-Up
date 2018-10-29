@@ -8,6 +8,8 @@ public class PlayGamesScript : MonoBehaviour
 {
 	public static PlayGamesScript instance;
 
+	public static bool firstStart = true;
+
 	[SerializeField] TextMeshProUGUI playerName;
 
 	void Awake()
@@ -27,6 +29,8 @@ public class PlayGamesScript : MonoBehaviour
 
 	void Start ()
 	{
+		if(Social.localUser.authenticated) return;
+
 		PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder().Build();
 		PlayGamesPlatform.InitializeInstance(config);
 		PlayGamesPlatform.DebugLogEnabled = true;

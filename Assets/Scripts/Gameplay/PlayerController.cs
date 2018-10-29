@@ -14,10 +14,14 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private float speed;
 	[SerializeField] private float maxHorizontalDistance;
 	[SerializeField] private Camera cam;
+
+	[SerializeField] AudioSource audioSrc;
+	[SerializeField] AudioClip[] explosions;
 	
 
 	void Start ()
 	{
+		audioSrc.volume = PlayerPrefs.GetFloat("sfxVolume");
 		currentHp = maxHp;
 		//transform.position = new Vector3(0, -cam.orthographicSize, 0);
 	}
@@ -44,6 +48,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (canTakeDamage)
 		{
+			Handheld.Vibrate();
 			canTakeDamage = false;
 			currentHp--;
 			StartCoroutine(InvincibilityFrames(.25f));
@@ -55,7 +60,13 @@ public class PlayerController : MonoBehaviour
 
 			cam.DOShakePosition(.1f, .4f, 2, 90, false);
 
-			if (currentHp <= 0) Die();
+			if (currentHp <= 0)
+			{
+				audioSrc.PlayOneShot(explosions[1]);
+				transform.DOMoveY(-10f, 0f);
+				Invoke("Die", .5f);
+			}
+			else audioSrc.PlayOneShot(explosions[0]);
 		}
 	}
 
